@@ -29,7 +29,7 @@ class UserStates(StatesGroup):
 load_dotenv('.env')
 BOT_TOKEN = getenv("BOT_TOKEN")
 USER_ID = getenv("USER_ID")
-sticker = str("CAACAgIAAxkBAAEJxo9ku-Igyz6eO-Ly0z2sMfIQ4yNufgACtgkAAnlc4gnGTnKNypclSC8E")
+sticker = "CAACAgIAAxkBAAEJxo9ku-Igyz6eO-Ly0z2sMfIQ4yNufgACtgkAAnlc4gnGTnKNypclSC8E"
 
 kb = Keyboard()
 dp = Dispatcher()
@@ -57,7 +57,7 @@ async def command_start_handler(message: Message, state: FSMContext) -> None:
         )
 
 
-@dp.message(us.coin_pair_state)
+@dp.message(us.coin_pair_state, F.from_user.id == int(USER_ID))
 async def get_coin_pair_name(message: Message, state: FSMContext) -> None:
     """
     Coin pair and amount data input function
@@ -73,7 +73,7 @@ async def get_coin_pair_name(message: Message, state: FSMContext) -> None:
     )
 
 
-@dp.message(us.amount_state)
+@dp.message(us.amount_state, F.from_user.id == int(USER_ID))
 async def get_amount_value(message: Message, state: FSMContext) -> None:
     """
     Coin pair and amount data save function

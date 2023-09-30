@@ -1,7 +1,7 @@
 import sqlite3 as sq
-from ast import literal_eval
 from datetime import datetime
 from trade_info import TradeInfo
+from ast import literal_eval as l_eval
 
 
 class DataBase(TradeInfo):
@@ -23,11 +23,13 @@ class DataBase(TradeInfo):
             )
             cur.execute(
                 "INSERT INTO trades VALUES(NULL, ?, ?, ?, ?, ?, ?, ?)",
-                (f'{datetime.now():%d}.{datetime.now():%m}.{datetime.now():%Y}',
-                 f'{datetime.now():%H}:{datetime.now():%M}', self.get_coin_pair_amount()[0],
-                 literal_eval(self.get_ticker(self.get_coin_pair_amount()[0]))[self.get_coin_pair_amount()[0]]["buy"],
-                 literal_eval(self.get_ticker(self.get_coin_pair_amount()[0]))[self.get_coin_pair_amount()[0]]["sell"],
-                 self.get_coin_pair_amount()[1], self.percent)
+                (
+                    f'{datetime.now():%d}.{datetime.now():%m}.{datetime.now():%Y}',
+                    f'{datetime.now():%H}:{datetime.now():%M}', self.get_coin_pair_amount()[0],
+                    l_eval(self.get_ticker(self.get_coin_pair_amount()[0]))[self.get_coin_pair_amount()[0]]["buy"],
+                    l_eval(self.get_ticker(self.get_coin_pair_amount()[0]))[self.get_coin_pair_amount()[0]]["sell"],
+                    self.get_coin_pair_amount()[1], self.percent
+                )
             )
 
     def get_data_db(self, coin_pair, amount) -> None:
@@ -44,8 +46,8 @@ class DataBase(TradeInfo):
                 (
                     f'{datetime.now():%d}.{datetime.now():%m}.{datetime.now():%Y}',
                     f'{datetime.now():%H}:{datetime.now():%M}', coin_pair["coin_pair_state"],
-                    literal_eval(self.get_ticker(coin_pair["coin_pair_state"]))[coin_pair["coin_pair_state"]]["buy"],
-                    literal_eval(self.get_ticker(coin_pair["coin_pair_state"]))[coin_pair["coin_pair_state"]]["sell"],
+                    l_eval(self.get_ticker(coin_pair["coin_pair_state"]))[coin_pair["coin_pair_state"]]["buy"],
+                    l_eval(self.get_ticker(coin_pair["coin_pair_state"]))[coin_pair["coin_pair_state"]]["sell"],
                     amount["amount_state"], self.percent
                 )
             )
