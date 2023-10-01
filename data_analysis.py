@@ -31,9 +31,9 @@ class DataAnalysis(DataBase):
         The function returns the decision to buy or sell the coin
         :return: str
         """
-        if float(self.percentage(self.coin_trade_info(self.sell)[-1], self.sell)[0]) >= 1.0:
+        if float(self.percentage(self.coin_trade_info(self.sell)[-1], self.sell)[0]) >= self.get_notification()[0]:
             return f", нужно покупать [{self.get_coin_name(self.coin_second)}]"
-        elif float(self.percentage(self.coin_trade_info(self.buy)[-1], self.buy)[0]) <= -1.0:
+        elif float(self.percentage(self.coin_trade_info(self.buy)[-1], self.buy)[0]) <= -self.get_notification()[0]:
             return f", нужно покупать [{self.get_coin_name(self.coin_first)}]"
         else:
             return ''

@@ -24,6 +24,7 @@ class UserStates(StatesGroup):
     """User state machine class"""
     coin_pair_state = State()
     amount_state = State()
+    notification_state = State()
 
 
 load_dotenv('.env')
@@ -40,7 +41,7 @@ trade = DataAnalysis()
 @dp.message(CommandStart(), F.from_user.id == int(USER_ID))
 async def command_start_handler(message: Message, state: FSMContext) -> None:
     """
-    Main start function
+    Main start or coin_pair data save function
     :param message: Message
     :param state: FSMContext
     :return: None
@@ -60,7 +61,7 @@ async def command_start_handler(message: Message, state: FSMContext) -> None:
 @dp.message(us.coin_pair_state, F.from_user.id == int(USER_ID))
 async def get_coin_pair_name(message: Message, state: FSMContext) -> None:
     """
-    Coin pair and amount data input function
+    Amount data input function
     :param message: Message
     :param state: FSMContext
     :return: None
@@ -76,15 +77,37 @@ async def get_coin_pair_name(message: Message, state: FSMContext) -> None:
 @dp.message(us.amount_state, F.from_user.id == int(USER_ID))
 async def get_amount_value(message: Message, state: FSMContext) -> None:
     """
-    Coin pair and amount data save function
+    Notification data input function
     :param message: Message
     :param state: FSMContext
     :return: None
     """
     await state.update_data(amount_state=message.text)
+    await state.set_state(us.notification_state)
+    await message.answer(
+        "Введите границу изменеия стоимости в процентах: ",
+        reply_markup=kb.inline_keyboard.as_markup()
+    )
+
+
+@dp.message(us.notification_state, F.from_user.id == int(USER_ID))
+async def get_notification_value(message: Message, state: FSMContext) -> None:
+    """
+    Coin pair, amount and notification data save function
+    :param message: Message
+    :param state: FSMContext
+    :return: None
+    """
+    await state.update_data(notification_state=message.text)
     coin_pair = await state.get_data()
     amount = await state.get_data()
-    trade.get_data_db(coin_pair, amount)
+    notification = await state.get_data()
+    try:
+        trade.verify_instance(float(amount['amount_state']))
+        trade.verify_instance(float(notification['notification_state']))
+        trade.get_data_db(coin_pair, amount, notification)
+    except (TypeError, ValueError, KeyError):
+        await message.answer("Ошибка ввода данных!")
     await state.clear()
     await message.answer("Данные сохранены!")
 

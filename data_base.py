@@ -16,39 +16,40 @@ class DataBase(TradeInfo):
                 """
                 CREATE TABLE IF NOT EXISTS trades
                 (
-                id INTEGER PRIMARY KEY AUTOINCREMENT, 
-                date TEXT, time TEXT, coin_pair TEXT, buy TEXT, sell TEXT, amount TEXT, percent TEXT
+                id INTEGER PRIMARY KEY AUTOINCREMENT, date TEXT, time TEXT, coin_pair TEXT, 
+                buy TEXT, sell TEXT, amount TEXT, percent TEXT, notification FLOAT
                 )
                 """
             )
             cur.execute(
-                "INSERT INTO trades VALUES(NULL, ?, ?, ?, ?, ?, ?, ?)",
+                "INSERT INTO trades VALUES(NULL, ?, ?, ?, ?, ?, ?, ?, ?)",
                 (
                     f'{datetime.now():%d}.{datetime.now():%m}.{datetime.now():%Y}',
                     f'{datetime.now():%H}:{datetime.now():%M}', self.get_coin_pair_amount()[0],
                     l_eval(self.get_ticker(self.get_coin_pair_amount()[0]))[self.get_coin_pair_amount()[0]]["buy"],
                     l_eval(self.get_ticker(self.get_coin_pair_amount()[0]))[self.get_coin_pair_amount()[0]]["sell"],
-                    self.get_coin_pair_amount()[1], self.percent
+                    self.get_coin_pair_amount()[1], self.percent, self.get_notification()[0]
                 )
             )
 
-    def get_data_db(self, coin_pair, amount) -> None:
+    def get_data_db(self, coin_pair, amount, notification) -> None:
         """
         Input data in DB function
-        :param coin_pair: object
-        :param amount: str
+        :param notification: float
+        :param coin_pair: str
+        :param amount: float
         :return: None
         """
         with sq.connect("trades.db") as db:
             cur = db.cursor()
             cur.execute(
-                "INSERT INTO trades VALUES(NULL, ?, ?, ?, ?, ?, ?, ?)",
+                "INSERT INTO trades VALUES(NULL, ?, ?, ?, ?, ?, ?, ?, ?)",
                 (
                     f'{datetime.now():%d}.{datetime.now():%m}.{datetime.now():%Y}',
                     f'{datetime.now():%H}:{datetime.now():%M}', coin_pair["coin_pair_state"],
                     l_eval(self.get_ticker(coin_pair["coin_pair_state"]))[coin_pair["coin_pair_state"]]["buy"],
                     l_eval(self.get_ticker(coin_pair["coin_pair_state"]))[coin_pair["coin_pair_state"]]["sell"],
-                    amount["amount_state"], self.percent
+                    amount["amount_state"], self.percent, notification['notification_state']
                 )
             )
 
@@ -80,6 +81,14 @@ class DataBase(TradeInfo):
         """
         coin_pair_and_amount = self.get_value_list("SELECT coin_pair, amount FROM trades")
         return coin_pair_and_amount[0]
+
+    def get_notification(self) -> list:
+        """
+        Return notification value function
+        :return: list
+        """
+        notification_value = self.get_value_list("SELECT notification FROM trades")
+        return notification_value[0]
 
     def get_buy_or_sell(self, buy_or_sell) -> list:
         """
