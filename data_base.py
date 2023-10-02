@@ -25,10 +25,10 @@ class DataBase(TradeInfo):
                 "INSERT INTO trades VALUES(NULL, ?, ?, ?, ?, ?, ?, ?, ?)",
                 (
                     f'{datetime.now():%d}.{datetime.now():%m}.{datetime.now():%Y}',
-                    f'{datetime.now():%H}:{datetime.now():%M}', self.get_coin_pair_amount()[0],
-                    l_eval(self.get_ticker(self.get_coin_pair_amount()[0]))[self.get_coin_pair_amount()[0]]["buy"],
-                    l_eval(self.get_ticker(self.get_coin_pair_amount()[0]))[self.get_coin_pair_amount()[0]]["sell"],
-                    self.get_coin_pair_amount()[1], self.percent, self.get_notification()[0]
+                    f'{datetime.now():%H}:{datetime.now():%M}', self.get_instances()[0],
+                    l_eval(self.get_ticker(self.get_instances()[0]))[self.get_instances()[0]]["buy"],
+                    l_eval(self.get_ticker(self.get_instances()[0]))[self.get_instances()[0]]["sell"],
+                    self.get_instances()[1], self.percent, self.get_instances()[2]
                 )
             )
 
@@ -74,21 +74,13 @@ class DataBase(TradeInfo):
         coin_pair = self.get_value_list("SELECT coin_pair FROM trades")
         return (''.join(coin_pair[0][0])).split("_")[coin]
 
-    def get_coin_pair_amount(self) -> list:
+    def get_instances(self) -> list:
         """
-        Return coin pair and amount function
+        Return coin pair, amount and notification function
         :return: list
         """
-        coin_pair_and_amount = self.get_value_list("SELECT coin_pair, amount FROM trades")
-        return coin_pair_and_amount[0]
-
-    def get_notification(self) -> list:
-        """
-        Return notification value function
-        :return: list
-        """
-        notification_value = self.get_value_list("SELECT notification FROM trades")
-        return notification_value[0]
+        instances = self.get_value_list("SELECT coin_pair, amount, notification FROM trades")
+        return instances[0]
 
     def get_buy_or_sell(self, buy_or_sell) -> list:
         """

@@ -85,7 +85,7 @@ async def get_amount_value(message: Message, state: FSMContext) -> None:
     await state.update_data(amount_state=message.text)
     await state.set_state(us.notification_state)
     await message.answer(
-        "Введите границу изменеия стоимости в процентах: ",
+        "Введите границу изменения стоимости в процентах: ",
         reply_markup=kb.inline_keyboard.as_markup()
     )
 
