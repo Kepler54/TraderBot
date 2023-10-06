@@ -12,6 +12,7 @@ class DataAnalysis(DataBase):
         value_list = []
         for value in values_list:
             value_list.append(float(value[buy_or_sell]))
+
         return value_list
 
     def percentage(self, value, buy_or_sell) -> tuple[str, str]:
@@ -26,17 +27,17 @@ class DataAnalysis(DataBase):
             f'{value / self.coin_trade_info(buy_or_sell)[0]:%}'
         )
 
-    def buy_sell_verify(self) -> str:
+    def buy_sell_verify(self) -> tuple[str, str]:
         """
         The function returns the decision to buy or sell the coin
-        :return: str
+        :return: tuple
         """
         if float(self.percentage(self.coin_trade_info(self.sell)[-1], self.sell)[0]) >= self.get_instances()[2]:
-            return f", нужно покупать [{self.get_coin_name(self.coin_second)}]"
+            return f", нужно покупать [{self.get_coin_name(self.coin_second)}]", "notification"
         elif float(self.percentage(self.coin_trade_info(self.buy)[-1], self.buy)[0]) <= -self.get_instances()[2]:
-            return f", нужно покупать [{self.get_coin_name(self.coin_first)}]"
+            return f", нужно покупать [{self.get_coin_name(self.coin_first)}]", "notification"
         else:
-            return ''
+            return '', ''
 
     def get_exchange_info(self, value, buy_or_sell) -> str:
         """
@@ -85,11 +86,11 @@ class DataAnalysis(DataBase):
         current_price_minus_percent = float(current_price - (current_price / 100 * percent))
 
         return (
-            f"Сумма входа в {self.get_coin_name(self.coin_first)}: {amount:.8f}\n"
+            f"Сумма входа в [{self.get_coin_name(self.coin_first)}]: {amount:.8f}\n"
             f"Комиссия составляет: {percent}%\n"
-            f"Начальный результат в {self.get_coin_name(self.coin_second)}: {start_price_minus_percent:.8f}\n"
-            f"Актуальный результат в {self.get_coin_name(self.coin_second)}: {current_price_minus_percent:.8f}\n"
-            f"Изменение суммы: {current_price_minus_percent - start_price_minus_percent:.8f}{self.buy_sell_verify()}\n"
-            f"(Продажа) {self.get_exchange_info(self.coin_trade_info(self.buy)[-1], self.buy)}\n"
+            f"Начальный результат в [{self.get_coin_name(self.coin_second)}]: {start_price_minus_percent:.8f}\n"
+            f"Актуальный результат в [{self.get_coin_name(self.coin_second)}]: {current_price_minus_percent:.8f}\n"
+            f"Изменение суммы: {current_price_minus_percent - start_price_minus_percent:.8f}{self.buy_sell_verify()[0]}"
+            f"\n(Продажа) {self.get_exchange_info(self.coin_trade_info(self.buy)[-1], self.buy)}\n"
             f"(Покупка) {self.get_exchange_info(self.coin_trade_info(self.sell)[-1], self.sell)}\n"
         )
