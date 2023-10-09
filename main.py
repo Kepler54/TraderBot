@@ -56,7 +56,6 @@ async def command_start_handler(message: Message, state: FSMContext) -> None:
             'Введите валютную пару строчными символами "eth_btc": ',
             reply_markup=kb.inline_keyboard.as_markup()
         )
-    return None
 
 
 @dp.message(us.coin_pair_state, F.from_user.id == int(USER_ID))
@@ -73,7 +72,6 @@ async def get_coin_pair_name(message: Message, state: FSMContext) -> None:
         "Введите сумму входа на рынок: ",
         reply_markup=kb.inline_keyboard.as_markup()
     )
-    return None
 
 
 @dp.message(us.amount_state, F.from_user.id == int(USER_ID))
@@ -90,7 +88,6 @@ async def get_amount_value(message: Message, state: FSMContext) -> None:
         "Введите границу изменения стоимости в процентах: ",
         reply_markup=kb.inline_keyboard.as_markup()
     )
-    return None
 
 
 @dp.message(us.notification_state, F.from_user.id == int(USER_ID))
@@ -114,8 +111,6 @@ async def get_notification_value(message: Message, state: FSMContext) -> None:
     await state.clear()
     await message.answer("Данные сохранены!")
 
-    return None
-
 
 @dp.callback_query()
 async def callback_cancel(callback: CallbackQuery, state: FSMContext) -> None:
@@ -130,8 +125,6 @@ async def callback_cancel(callback: CallbackQuery, state: FSMContext) -> None:
     await state.clear()
     await callback.message.delete()
 
-    return None
-
 
 @dp.message()
 async def echo_handler(message: Message) -> None:
@@ -142,8 +135,6 @@ async def echo_handler(message: Message) -> None:
     """
     await message.answer("Не понял!")
 
-    return None
-
 
 async def main() -> None:
     """
@@ -152,8 +143,6 @@ async def main() -> None:
     """
     bot = Bot(BOT_TOKEN, parse_mode=ParseMode.HTML)
     await dp.start_polling(bot)
-
-    return None
 
 
 if __name__ == '__main__':

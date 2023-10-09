@@ -1,7 +1,6 @@
 class Descriptor:
     def __set_name__(self, owner, name) -> None:
         self.name = f"_{name}"
-        return None
 
     def __get__(self, instance, owner) -> int:
         return getattr(instance, self.name)
@@ -17,8 +16,6 @@ class Configuration:
     def verify_instance(cls, instance) -> None:
         if type(instance) != float:
             raise TypeError
-
-        return None
 
     def __init__(self, buy=0, sell=1, coin_first=0, coin_second=1, percent=0.2):
         self._buy = buy

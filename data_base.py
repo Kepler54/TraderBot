@@ -31,7 +31,6 @@ class DataBase(TradeInfo):
                     self.get_instances()[1], self.percent, self.get_instances()[2]
                 )
             )
-        return None
 
     def get_data_db(self, coin_pair, amount, notification) -> None:
         """
@@ -53,7 +52,6 @@ class DataBase(TradeInfo):
                     amount["amount_state"], self.percent, notification['notification_state']
                 )
             )
-        return None
 
     @staticmethod
     def get_value_list(select) -> list:
