@@ -1,9 +1,9 @@
 import sys
-import logging
 from os import getenv
 from asyncio import run
 from dotenv import load_dotenv
 from aiogram.enums import ParseMode
+from logging import basicConfig, INFO
 from data_analysis import DataAnalysis
 from aiogram import Bot, Dispatcher, F
 from aiogram.utils.markdown import hbold
@@ -146,5 +146,5 @@ async def main() -> None:
 
 
 if __name__ == '__main__':
-    logging.basicConfig(level=logging.INFO, stream=sys.stdout)
+    basicConfig(level=INFO, stream=sys.stdout)
     run(main())
